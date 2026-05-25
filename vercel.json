@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "env": {
+    "NESTJS_API_URL": "@nestjs_api_url"
+  }
+}
