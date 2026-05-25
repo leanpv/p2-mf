@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la \"c:\\\\Users\\\\mario\\\\CLAUDE\\\\LAND2\\\\\")",
+      "Read(//c/Users/mario/CLAUDE/**)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "PowerShell(\\(Get-Command mongosh\\).Source)",
+      "Bash(mongosh mongodb://localhost:27017 --quiet --eval \"print\\('MongoDB OK'\\)\")",
+      "PowerShell(& \"C:\\\\Program Files\\\\MongoDB\\\\Server\\\\7.0\\\\bin\\\\mongod.exe\" --dbpath \"$env:APPDATA\\\\MongoDB\\\\data\")",
+      "PowerShell(Stop-Process -ID 3196 -Force 2>&1)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 3001 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -ID $_.OwningProcess -Force 2>&1 }; Start-Sleep -Milliseconds 1000)",
+      "Bash(curl -s http://localhost:3001)",
+      "Bash(curl -s http://localhost:3000)"
+    ]
+  }
+}
