@@ -8,8 +8,8 @@ export function Header() {
             <Image
                 src="/logocba2.png"
                 alt="Propiedades CBA"
-                width={98}
-                height={28}
+                width={140}
+                height={40}
                 className="select-none brightness-0 invert mix-blend-difference"
                 priority
             />
