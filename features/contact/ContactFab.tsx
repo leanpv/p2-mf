@@ -4,11 +4,11 @@ import { useUIStore } from "@/lib/zustand/ui.store";
 import { cn } from "@/lib/utils";
 
 export function ContactFab() {
-  const { isContactModalOpen, isGalleryOpen, openContactModal } = useUIStore();
+  const { isContactModalOpen, isGalleryOpen, isLightboxOpen, openContactModal } = useUIStore();
 
   if (isContactModalOpen) return null;
 
-  const onGallery = isGalleryOpen;
+  const onGallery = isGalleryOpen && !isLightboxOpen;
 
   return (
     <button

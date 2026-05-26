@@ -7,10 +7,15 @@ import { PROPERTIES, type Property } from "./gallery.data";
 import { cn } from "@/lib/utils";
 
 export function GalleryModal() {
-  const { isGalleryOpen, closeGallery, galleryActiveTab, setGalleryTab } = useUIStore();
+  const { isGalleryOpen, closeGallery, galleryActiveTab, setGalleryTab, setLightbox: setLightboxStore } = useUIStore();
   const panelRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [lightbox, setLightbox] = useState<{ photoIdx: number } | null>(null);
+  const [lightbox, setLightboxLocal] = useState<{ photoIdx: number } | null>(null);
+
+  const setLightbox = (val: { photoIdx: number } | null) => {
+    setLightboxLocal(val);
+    setLightboxStore(val !== null);
+  };
 
   useEffect(() => {
     const panel = panelRef.current;
