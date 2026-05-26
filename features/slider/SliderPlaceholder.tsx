@@ -1,24 +1,17 @@
 "use client";
 
 import { useUIStore } from "@/lib/zustand/ui.store";
+import { PROPERTIES } from "@/features/gallery/gallery.data";
 import { cn } from "@/lib/utils";
 
-const SLIDES = [
-  { label: "Slide 01", subtitle: "Penthouse · Nueva Córdoba" },
-  { label: "Slide 02", subtitle: "Casa · Cerro de las Rosas" },
-  { label: "Slide 03", subtitle: "Departamento · Güemes" },
-  { label: "Slide 04", subtitle: "Villa · Country Los Álamos" },
-  { label: "Slide 05", subtitle: "Loft · Centro" },
-];
-
 export function SliderPlaceholder() {
-  const { currentSlide, nextSlide, prevSlide } = useUIStore();
+  const { currentSlide, nextSlide, prevSlide, openGallery } = useUIStore();
 
   return (
     <section className="relative w-full h-screen bg-primary overflow-hidden" aria-label="Slider de propiedades">
 
       {/* Slides */}
-      {SLIDES.map((slide, i) => (
+      {PROPERTIES.map((prop, i) => (
         <div
           key={i}
           className={cn(
@@ -30,68 +23,93 @@ export function SliderPlaceholder() {
           {/* Placeholder visual */}
           <div className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/40 to-primary/90" />
           <div className="absolute inset-0 flex items-center justify-center opacity-5">
-            <span className="font-sans font-light text-secondary select-none"
-              style={{ fontSize: "clamp(8rem, 25vw, 22rem)", lineHeight: 1, letterSpacing: "0.1em" }}>
+            <span
+              className="font-sans font-light text-secondary select-none"
+              style={{ fontSize: "clamp(8rem, 25vw, 22rem)", lineHeight: 1, letterSpacing: "0.1em" }}
+            >
               {String(i + 1).padStart(2, "0")}
             </span>
           </div>
 
           {/* Contenido */}
           <div className="relative z-10 text-center px-6">
-            <p className="font-sans font-medium text-accent uppercase mb-4"
-              style={{ letterSpacing: "0.3em", fontSize: "0.65rem" }}>
-              {slide.subtitle}
+            <p
+              className="font-sans font-medium text-accent uppercase mb-4"
+              style={{ letterSpacing: "0.3em", fontSize: "0.65rem" }}
+            >
+              {prop.name} · {prop.location}
             </p>
-            <h2 className="font-sans font-light text-secondary"
-              style={{ fontSize: "var(--text-display)", letterSpacing: "var(--tracking-display)", lineHeight: "var(--leading-display)" }}>
-              {slide.label}
+            <h2
+              className="font-sans font-light text-secondary"
+              style={{ fontSize: "var(--text-display)", letterSpacing: "var(--tracking-display)", lineHeight: "var(--leading-display)" }}
+            >
+              {prop.sliderLabel}
             </h2>
+
+            <button
+              onClick={(e) => { e.stopPropagation(); openGallery(i); }}
+              className="group relative mt-10 overflow-hidden border border-secondary/30 hover:border-secondary/60 px-8 py-3 cursor-pointer transition-colors duration-300"
+            >
+              <span className="absolute inset-0 bg-secondary/0 group-hover:bg-secondary/10 transition-colors duration-300" />
+              <span
+                className="relative font-sans font-light text-secondary/60 group-hover:text-secondary uppercase transition-colors duration-300"
+                style={{ letterSpacing: "0.2em", fontSize: "0.65rem" }}
+              >
+                Ver más fotos
+              </span>
+            </button>
           </div>
         </div>
       ))}
 
-      {/* Flechas */}
+      {/* Flechas — detienen propagación para no abrir galería */}
       <button
-        onClick={prevSlide}
-        className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 z-20 text-secondary/40 hover:text-accent hover:scale-110 transition-all duration-300 p-2 cursor-pointer"
+        onClick={(e) => { e.stopPropagation(); prevSlide(); }}
+        className="group absolute left-6 md:left-12 top-1/2 -translate-y-1/2 z-20 text-secondary/40 hover:text-accent hover:-translate-x-2 transition-all duration-300 p-2 cursor-pointer"
         aria-label="Slide anterior"
       >
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1">
+        <svg
+          width="48" height="48" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="0.8"
+          className="transition-all duration-300 group-hover:[stroke-width:1.2]"
+        >
           <path d="M20 8L12 16L20 24" />
         </svg>
       </button>
 
       <button
-        onClick={nextSlide}
-        className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2 z-20 text-secondary/40 hover:text-accent hover:scale-110 transition-all duration-300 p-2 cursor-pointer"
+        onClick={(e) => { e.stopPropagation(); nextSlide(); }}
+        className="group absolute right-6 md:right-12 top-1/2 -translate-y-1/2 z-20 text-secondary/40 hover:text-accent hover:translate-x-2 transition-all duration-300 p-2 cursor-pointer"
         aria-label="Slide siguiente"
       >
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1">
+        <svg
+          width="48" height="48" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="0.8"
+          className="transition-all duration-300 group-hover:[stroke-width:1.2]"
+        >
           <path d="M12 8L20 16L12 24" />
         </svg>
       </button>
 
-      {/* Indicadores */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-3">
-        {SLIDES.map((_, i) => (
+      {/* Indicadores — nombres de propiedad */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-6 md:gap-10">
+        {PROPERTIES.map((prop, i) => (
           <button
             key={i}
-            onClick={() => useUIStore.getState().setSlide(i)}
+            onClick={(e) => { e.stopPropagation(); useUIStore.getState().setSlide(i); }}
             className={cn(
-              "h-px transition-all duration-500 cursor-pointer",
+              "font-sans uppercase transition-all duration-300 cursor-pointer whitespace-nowrap",
               i === currentSlide
-                ? "w-10 bg-accent"
-                : "w-4 bg-secondary/30 hover:bg-secondary/60"
+                ? "text-accent font-medium"
+                : "text-secondary/30 font-light hover:text-secondary/60"
             )}
-            aria-label={`Ir al slide ${i + 1}`}
-          />
+            style={{
+              letterSpacing: "0.18em",
+              fontSize: i === currentSlide ? "0.8rem" : "0.65rem",
+            }}
+            aria-label={`Ir a ${prop.name}`}
+          >
+            {prop.name}
+          </button>
         ))}
-      </div>
-
-      {/* Número de slide */}
-      <div className="absolute bottom-8 right-6 md:right-12 z-20 font-sans font-light text-secondary/30 tabular-nums"
-        style={{ letterSpacing: "0.15em", fontSize: "0.7rem" }}>
-        {String(currentSlide + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
       </div>
     </section>
   );

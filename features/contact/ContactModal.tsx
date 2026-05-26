@@ -95,7 +95,7 @@ export function ContactModal() {
       <div
         ref={overlayRef}
         onClick={closeContactModal}
-        className="fixed inset-0 z-40 bg-primary/60 backdrop-blur-sm invisible opacity-0"
+        className="fixed inset-0 z-[70] bg-primary/60 hover:bg-primary/70 backdrop-blur-sm invisible opacity-0 cursor-pointer transition-colors duration-300"
         aria-hidden="true"
       />
 
@@ -105,19 +105,23 @@ export function ContactModal() {
         role="dialog"
         aria-modal="true"
         aria-label="Formulario de contacto"
-        className="fixed top-0 right-0 bottom-0 z-50 w-full md:w-[520px] bg-secondary flex flex-col translate-x-full"
+        className="fixed top-0 right-0 bottom-0 z-[80] w-full md:w-[520px] bg-secondary flex flex-col translate-x-full"
       >
         {/* Header del panel */}
         <div className="flex items-center justify-between px-8 py-7 border-b border-border">
           <p className="font-sans font-medium text-primary uppercase" style={{ fontSize: "var(--text-title)", letterSpacing: "0.12em" }}>
-            Consultar
+            Consultanos
           </p>
           <button
             onClick={closeContactModal}
-            className="text-muted hover:text-primary transition-colors duration-200 p-1 cursor-pointer"
+            className="group relative flex items-center justify-center w-14 h-14 text-primary cursor-pointer"
             aria-label="Cerrar"
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.2">
+            <span className="absolute inset-0 rounded-full border border-border scale-75 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300" />
+            <svg
+              width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1"
+              className="transition-all duration-300 group-hover:rotate-90 [stroke-width:1] group-hover:[stroke-width:1.6]"
+            >
               <path d="M4 4L16 16M16 4L4 16" />
             </svg>
           </button>

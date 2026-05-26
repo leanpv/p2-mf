@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Exo_2, DM_Sans } from "next/font/google";
 import { ReactQueryProvider } from "@/lib/react-query";
 import { ContactModal } from "@/features/contact/ContactModal";
+import { ContactFab } from "@/features/contact/ContactFab";
+import { GalleryModal } from "@/features/gallery/GalleryModal";
 import "./globals.css";
 
 const exo2 = Exo_2({
@@ -36,6 +38,8 @@ export default function RootLayout({
         <ReactQueryProvider>
           {children}
           <ContactModal />
+          <GalleryModal />
+          <ContactFab />
         </ReactQueryProvider>
       </body>
     </html>

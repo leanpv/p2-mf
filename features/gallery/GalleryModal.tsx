@@ -1,0 +1,225 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { useUIStore } from "@/lib/zustand/ui.store";
+import { PROPERTIES, type Property } from "./gallery.data";
+import { cn } from "@/lib/utils";
+
+export function GalleryModal() {
+  const { isGalleryOpen, closeGallery, galleryActiveTab, setGalleryTab } = useUIStore();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [lightbox, setLightbox] = useState<{ photoIdx: number } | null>(null);
+
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    if (isGalleryOpen) {
+      gsap.set(panel, { y: "100%" });
+      gsap.to(panel, { y: "0%", duration: 0.65, ease: "expo.out" });
+    } else {
+      gsap.to(panel, { y: "100%", duration: 0.45, ease: "expo.in", onComplete: () => setLightbox(null) });
+    }
+  }, [isGalleryOpen]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (lightbox) setLightbox(null);
+        else closeGallery();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [closeGallery, lightbox]);
+
+  const activeProp = PROPERTIES[galleryActiveTab];
+
+  return (
+    <>
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Galería de propiedades"
+        className="fixed inset-0 z-50 bg-secondary flex flex-col translate-y-full"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 md:px-12 py-6 border-b border-border shrink-0">
+          <p
+            className="font-sans font-medium text-primary uppercase"
+            style={{ letterSpacing: "0.2em", fontSize: "0.7rem" }}
+          >
+            Galería
+          </p>
+          <button
+            onClick={closeGallery}
+            className="group relative flex items-center justify-center w-14 h-14 text-primary cursor-pointer"
+            aria-label="Cerrar galería"
+          >
+            <span className="absolute inset-0 rounded-full border border-border scale-75 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300" />
+            <svg
+              width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1"
+              className="transition-all duration-300 group-hover:rotate-90 [stroke-width:1] group-hover:[stroke-width:1.6]"
+            >
+              <path d="M4 4L16 16M16 4L4 16" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Tab bar */}
+        <div className="flex overflow-x-auto border-b border-border px-6 md:px-12 gap-8 shrink-0 scrollbar-none">
+          {PROPERTIES.map((prop, i) => (
+            <button
+              key={prop.id}
+              onClick={() => setGalleryTab(i)}
+              className={cn(
+                "font-sans font-medium uppercase py-4 whitespace-nowrap cursor-pointer transition-colors duration-200 border-b-2 -mb-px shrink-0",
+                i === galleryActiveTab
+                  ? "text-primary border-accent"
+                  : "text-muted border-transparent hover:text-primary"
+              )}
+              style={{ letterSpacing: "0.15em", fontSize: "0.65rem" }}
+            >
+              {prop.name}
+            </button>
+          ))}
+        </div>
+
+        {/* Subtítulo de propiedad activa */}
+        <div className="px-6 md:px-12 pt-8 pb-4 shrink-0">
+          <p
+            className="font-sans font-light text-muted"
+            style={{ letterSpacing: "0.08em", fontSize: "0.75rem" }}
+          >
+            {activeProp.name} · {activeProp.location}
+            <span className="ml-4 text-muted/40">{activeProp.photoCount} fotos</span>
+          </p>
+        </div>
+
+        {/* Grid de fotos */}
+        <div className="flex-1 overflow-y-auto px-6 md:px-12 pb-12 scrollbar-none">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {Array.from({ length: activeProp.photoCount }).map((_, photoIdx) => (
+              <button
+                key={photoIdx}
+                onClick={() => setLightbox({ photoIdx })}
+                className="group relative aspect-[4/3] bg-muted-bg overflow-hidden cursor-pointer"
+                aria-label={`Foto ${photoIdx + 1} de ${activeProp.name}`}
+              >
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span
+                    className="font-sans font-light text-muted/20 tabular-nums"
+                    style={{ fontSize: "2rem" }}
+                  >
+                    {String(photoIdx + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/8 transition-colors duration-300 flex items-center justify-center">
+                  <svg
+                    className="text-primary opacity-0 group-hover:opacity-60 transition-opacity duration-300"
+                    width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1"
+                  >
+                    <path d="M1 1h6M1 1v6M17 1h-6M17 1v6M1 17h6M1 17v-6M17 17h-6M17 17v-6" />
+                  </svg>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+      </div>
+
+      {lightbox && (
+        <Lightbox
+          property={activeProp}
+          photoIdx={lightbox.photoIdx}
+          onClose={() => setLightbox(null)}
+          onPrev={() => setLightbox((l) => l && l.photoIdx > 0 ? { photoIdx: l.photoIdx - 1 } : l)}
+          onNext={() => setLightbox((l) => l && l.photoIdx < activeProp.photoCount - 1 ? { photoIdx: l.photoIdx + 1 } : l)}
+        />
+      )}
+    </>
+  );
+}
+
+function Lightbox({
+  property,
+  photoIdx,
+  onClose,
+  onPrev,
+  onNext,
+}: {
+  property: Property;
+  photoIdx: number;
+  onClose: () => void;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
+  const hasPrev = photoIdx > 0;
+  const hasNext = photoIdx < property.photoCount - 1;
+
+  return (
+    <div className="fixed inset-0 z-[60] bg-primary flex items-center justify-center">
+      {/* Foto placeholder */}
+      <div className="relative w-full max-w-5xl aspect-[16/9] mx-6 md:mx-16 bg-white/5 flex items-center justify-center border border-secondary/10">
+        <span
+          className="font-sans font-light text-secondary/20 uppercase"
+          style={{ letterSpacing: "0.25em", fontSize: "0.65rem" }}
+        >
+          {property.name} · {property.location} · {String(photoIdx + 1).padStart(2, "0")}
+        </span>
+      </div>
+
+      {/* Cerrar */}
+      <button
+        onClick={onClose}
+        className="group absolute top-6 right-6 flex items-center justify-center w-14 h-14 text-secondary cursor-pointer"
+        aria-label="Cerrar"
+      >
+        <span className="absolute inset-0 rounded-full border border-secondary/20 scale-75 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300" />
+        <svg
+          width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1"
+          className="transition-all duration-300 group-hover:rotate-90 [stroke-width:1] group-hover:[stroke-width:1.6]"
+        >
+          <path d="M4 4L16 16M16 4L4 16" />
+        </svg>
+      </button>
+
+      {/* Anterior */}
+      {hasPrev && (
+        <button
+          onClick={onPrev}
+          className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 text-secondary/40 hover:text-accent hover:scale-110 transition-all duration-300 p-2 cursor-pointer"
+          aria-label="Foto anterior"
+        >
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1">
+            <path d="M20 8L12 16L20 24" />
+          </svg>
+        </button>
+      )}
+
+      {/* Siguiente */}
+      {hasNext && (
+        <button
+          onClick={onNext}
+          className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2 text-secondary/40 hover:text-accent hover:scale-110 transition-all duration-300 p-2 cursor-pointer"
+          aria-label="Foto siguiente"
+        >
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1">
+            <path d="M12 8L20 16L12 24" />
+          </svg>
+        </button>
+      )}
+
+      {/* Contador */}
+      <div
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 font-sans font-light text-secondary/30 tabular-nums"
+        style={{ letterSpacing: "0.15em", fontSize: "0.7rem" }}
+      >
+        {String(photoIdx + 1).padStart(2, "0")} / {String(property.photoCount).padStart(2, "0")}
+      </div>
+    </div>
+  );
+}
