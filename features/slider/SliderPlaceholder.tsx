@@ -55,7 +55,7 @@ export function SliderPlaceholder() {
                 className="relative font-sans font-light text-secondary/60 group-hover:text-secondary uppercase transition-colors duration-300"
                 style={{ letterSpacing: "0.2em", fontSize: "0.65rem" }}
               >
-                Ver más fotos
+                Galería
               </span>
             </button>
           </div>

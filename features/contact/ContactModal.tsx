@@ -50,33 +50,30 @@ export function ContactModal() {
     if (!panel || !overlay) return;
 
     if (isContactModalOpen) {
-      // Asegurar que esté visible antes de animar
       gsap.set(panel, { x: "100%" });
       gsap.set(overlay, { autoAlpha: 0 });
 
-      gsap.to(overlay, {
+      const tl = gsap.timeline();
+      tl.to(overlay, {
         autoAlpha: 1,
         duration: 0.4,
         ease: "power2.out",
-      });
-      gsap.to(panel, {
+      }).to(panel, {
         x: "0%",
-        duration: 0.65,
-        ease: "expo.out",
-      });
+        duration: 0.9,
+        ease: "power4.out",
+      }, "-=0.25");
     } else {
-      gsap.to(panel, {
+      const tl = gsap.timeline({ onComplete: () => mutation.reset() });
+      tl.to(panel, {
         x: "100%",
-        duration: 0.45,
-        ease: "expo.in",
-      });
-      gsap.to(overlay, {
+        duration: 0.55,
+        ease: "power3.inOut",
+      }).to(overlay, {
         autoAlpha: 0,
         duration: 0.35,
-        delay: 0.1,
         ease: "power2.in",
-        onComplete: () => mutation.reset(),
-      });
+      }, "-=0.2");
     }
   }, [isContactModalOpen]);
 

@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 export function GalleryModal() {
   const { isGalleryOpen, closeGallery, galleryActiveTab, setGalleryTab } = useUIStore();
   const panelRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [lightbox, setLightbox] = useState<{ photoIdx: number } | null>(null);
 
   useEffect(() => {
@@ -17,7 +18,7 @@ export function GalleryModal() {
 
     if (isGalleryOpen) {
       gsap.set(panel, { y: "100%" });
-      gsap.to(panel, { y: "0%", duration: 0.65, ease: "expo.out" });
+      gsap.to(panel, { y: "0%", duration: 0.65, ease: "expo.out", onStart: () => { if (scrollRef.current) scrollRef.current.scrollTop = 0; } });
     } else {
       gsap.to(panel, { y: "100%", duration: 0.45, ease: "expo.in", onComplete: () => setLightbox(null) });
     }
@@ -33,6 +34,10 @@ export function GalleryModal() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [closeGallery, lightbox]);
+
+  useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = 0;
+  }, [galleryActiveTab, isGalleryOpen]);
 
   const activeProp = PROPERTIES[galleryActiveTab];
 
@@ -99,7 +104,7 @@ export function GalleryModal() {
         </div>
 
         {/* Grid de fotos */}
-        <div className="flex-1 overflow-y-auto px-6 md:px-12 pb-12 scrollbar-none">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 md:px-12 pb-12 scrollbar-none">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {Array.from({ length: activeProp.photoCount }).map((_, photoIdx) => (
               <button
