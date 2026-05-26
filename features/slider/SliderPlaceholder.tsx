@@ -127,7 +127,7 @@ export function SliderPlaceholder() {
       </div>
 
       {/* Indicadores desktop: lista de nombres centrada, con margen derecho para el FAB */}
-      <div className="hidden md:flex absolute bottom-8 left-0 right-52 z-20 justify-center items-center gap-10">
+      <div className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-20 items-center gap-10">
         {PROPERTIES.map((prop, i) => (
           <button
             key={i}
