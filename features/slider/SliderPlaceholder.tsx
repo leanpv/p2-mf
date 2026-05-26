@@ -1,14 +1,35 @@
 "use client";
 
+import { useRef } from "react";
 import { useUIStore } from "@/lib/zustand/ui.store";
 import { PROPERTIES } from "@/features/gallery/gallery.data";
 import { cn } from "@/lib/utils";
 
 export function SliderPlaceholder() {
   const { currentSlide, nextSlide, prevSlide, openGallery } = useUIStore();
+  const touchStartX = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(delta) > 50) {
+      if (delta < 0) nextSlide();
+      else prevSlide();
+    }
+    touchStartX.current = null;
+  };
 
   return (
-    <section className="relative w-full h-screen bg-primary overflow-hidden" aria-label="Slider de propiedades">
+    <section
+      className="relative w-full h-screen bg-primary overflow-hidden"
+      aria-label="Slider de propiedades"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
 
       {/* Slides */}
       {PROPERTIES.map((prop, i) => (
