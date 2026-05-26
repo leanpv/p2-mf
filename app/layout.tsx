@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { Playfair_Display, DM_Sans } from "next/font/google";
+import { Exo_2, DM_Sans } from "next/font/google";
 import { ReactQueryProvider } from "@/lib/react-query";
+import { ContactModal } from "@/features/contact/ContactModal";
 import "./globals.css";
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const exo2 = Exo_2({
+  variable: "--font-exo2",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
   display: "swap",
 });
 
@@ -28,10 +30,13 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${playfair.variable} ${dmSans.variable} h-full antialiased`}
+      className={`${exo2.variable} ${dmSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <ReactQueryProvider>
+          {children}
+          <ContactModal />
+        </ReactQueryProvider>
       </body>
     </html>
   );

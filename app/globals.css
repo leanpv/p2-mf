@@ -14,8 +14,8 @@
   --color-error: #b91c1c;
 
   /* Tipografía */
-  --font-serif: var(--font-playfair), "Playfair Display", Georgia, serif;
-  --font-sans: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
+  --font-serif: var(--font-exo2);
+  --font-sans: var(--font-exo2);
 
   /* Tipografía fluida con clamp() */
   --text-display: clamp(2.5rem, 6vw, 5rem);
@@ -25,10 +25,10 @@
   --text-caption: clamp(0.75rem, 1vw, 0.875rem);
 
   /* Tracking y leading por nivel */
-  --tracking-display: -0.03em;
-  --tracking-headline: -0.02em;
-  --leading-display: 1.05;
-  --leading-headline: 1.15;
+  --tracking-display: 0.08em;
+  --tracking-headline: 0.04em;
+  --leading-display: 1.1;
+  --leading-headline: 1.2;
   --leading-body: 1.65;
 
   /* Border radius consistente */
