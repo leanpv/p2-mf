@@ -105,7 +105,7 @@ export function ContactModal() {
         className="fixed top-0 right-0 bottom-0 z-[80] w-full md:w-[520px] bg-secondary flex flex-col translate-x-full"
       >
         {/* Header del panel */}
-        <div className="flex items-center justify-between px-8 py-7 border-b border-border">
+        <div className="flex items-center justify-between px-6 md:px-8 py-7 border-b border-border">
           <p className="font-sans font-medium text-primary uppercase" style={{ fontSize: "var(--text-title)", letterSpacing: "0.12em" }}>
             Consultanos
           </p>
@@ -125,7 +125,7 @@ export function ContactModal() {
         </div>
 
         {/* Cuerpo */}
-        <div className="flex-1 overflow-y-auto px-8 py-8">
+        <div className="flex-1 overflow-y-auto px-6 md:px-8 py-8">
           {mutation.isSuccess ? (
             <SuccessState onClose={closeContactModal} />
           ) : (

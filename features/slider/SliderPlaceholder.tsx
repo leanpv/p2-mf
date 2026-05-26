@@ -89,8 +89,24 @@ export function SliderPlaceholder() {
         </svg>
       </button>
 
-      {/* Indicadores — nombres de propiedad */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-6 md:gap-10">
+      {/* Indicadores mobile: nombre activo + contador */}
+      <div className="md:hidden absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">
+        <span
+          className="font-sans font-medium text-accent uppercase whitespace-nowrap"
+          style={{ letterSpacing: "0.18em", fontSize: "0.8rem" }}
+        >
+          {PROPERTIES[currentSlide].name}
+        </span>
+        <span
+          className="font-sans font-light text-secondary/30 tabular-nums"
+          style={{ letterSpacing: "0.15em", fontSize: "0.6rem" }}
+        >
+          {String(currentSlide + 1).padStart(2, "0")} / {String(PROPERTIES.length).padStart(2, "0")}
+        </span>
+      </div>
+
+      {/* Indicadores desktop: lista de nombres */}
+      <div className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-20 items-center gap-10">
         {PROPERTIES.map((prop, i) => (
           <button
             key={i}
