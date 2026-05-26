@@ -20,8 +20,11 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Propiedades Premium",
+  title: "Propiedades CBA",
   description: "Propiedades inmobiliarias de lujo",
+  icons: {
+    icon: "/faviconcba.png",
+  },
 };
 
 export default function RootLayout({
