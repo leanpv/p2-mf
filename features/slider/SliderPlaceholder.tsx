@@ -89,8 +89,8 @@ export function SliderPlaceholder() {
         </svg>
       </button>
 
-      {/* Indicadores mobile: nombre activo + contador */}
-      <div className="md:hidden absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">
+      {/* Indicadores mobile: nombre a la izquierda, FAB contacto a la derecha */}
+      <div className="md:hidden absolute bottom-8 left-8 z-20 flex flex-col items-start gap-2">
         <span
           className="font-sans font-medium text-accent uppercase whitespace-nowrap"
           style={{ letterSpacing: "0.18em", fontSize: "0.8rem" }}
@@ -105,8 +105,8 @@ export function SliderPlaceholder() {
         </span>
       </div>
 
-      {/* Indicadores desktop: lista de nombres */}
-      <div className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-20 items-center gap-10">
+      {/* Indicadores desktop: lista de nombres centrada, con margen derecho para el FAB */}
+      <div className="hidden md:flex absolute bottom-8 left-0 right-52 z-20 justify-center items-center gap-10">
         {PROPERTIES.map((prop, i) => (
           <button
             key={i}
