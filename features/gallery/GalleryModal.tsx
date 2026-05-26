@@ -146,8 +146,8 @@ export function GalleryModal() {
           property={activeProp}
           photoIdx={lightbox.photoIdx}
           onClose={() => setLightbox(null)}
-          onPrev={() => setLightbox((l) => l && l.photoIdx > 0 ? { photoIdx: l.photoIdx - 1 } : l)}
-          onNext={() => setLightbox((l) => l && l.photoIdx < activeProp.photoCount - 1 ? { photoIdx: l.photoIdx + 1 } : l)}
+          onPrev={() => lightbox && lightbox.photoIdx > 0 && setLightbox({ photoIdx: lightbox.photoIdx - 1 })}
+          onNext={() => lightbox && lightbox.photoIdx < activeProp.photoCount - 1 && setLightbox({ photoIdx: lightbox.photoIdx + 1 })}
         />
       )}
     </>
