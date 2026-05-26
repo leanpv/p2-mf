@@ -11,7 +11,16 @@
       "PowerShell(Stop-Process -ID 3196 -Force 2>&1)",
       "PowerShell(Get-NetTCPConnection -LocalPort 3001 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -ID $_.OwningProcess -Force 2>&1 }; Start-Sleep -Milliseconds 1000)",
       "Bash(curl -s http://localhost:3001)",
-      "Bash(curl -s http://localhost:3000)"
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "PowerShell(Stop-Job -Id 1)",
+      "PowerShell(Remove-Job -Id 1)",
+      "PowerShell(Get-Job)",
+      "Bash(curl -s \"https://p2-bff.vercel.app/api/health\")",
+      "Bash(timeout 2 curl -s \"http://localhost:3001/api/health\")",
+      "Bash(curl -s \"http://localhost:3001/api/health\")"
     ]
   }
 }
