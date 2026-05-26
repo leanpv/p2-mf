@@ -102,10 +102,10 @@ export function ContactModal() {
         role="dialog"
         aria-modal="true"
         aria-label="Formulario de contacto"
-        className="fixed top-0 right-0 bottom-0 z-[80] w-full md:w-[520px] bg-secondary flex flex-col translate-x-full"
+        className="fixed top-0 right-0 bottom-0 z-[80] w-full md:w-[520px] bg-secondary flex flex-col translate-x-full overflow-hidden"
       >
         {/* Header del panel */}
-        <div className="flex items-center justify-between px-6 md:px-8 py-7 border-b border-border">
+        <div className="flex items-center justify-between px-6 md:px-8 py-5 md:py-7 border-b border-border">
           <p className="font-sans font-medium text-primary uppercase" style={{ fontSize: "var(--text-title)", letterSpacing: "0.12em" }}>
             Consultanos
           </p>
@@ -125,14 +125,14 @@ export function ContactModal() {
         </div>
 
         {/* Cuerpo */}
-        <div className="flex-1 overflow-y-auto px-6 md:px-8 py-8">
+        <div className="flex-1 overflow-hidden px-6 md:px-8 py-6 md:py-8">
           {mutation.isSuccess ? (
             <SuccessState onClose={closeContactModal} />
           ) : (
             <form
               onSubmit={handleSubmit((data) => mutation.mutate(data))}
               noValidate
-              className="flex flex-col gap-6"
+              className="flex flex-col gap-4 md:gap-6"
             >
               <p className="font-sans font-light text-muted" style={{ fontSize: "var(--text-body)", lineHeight: "var(--leading-body)" }}>
                 Dejanos tus datos y nos comunicamos a la brevedad.
