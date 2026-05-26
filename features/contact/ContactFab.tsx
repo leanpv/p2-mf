@@ -10,7 +10,7 @@ export function ContactFab() {
   return (
     <button
       onClick={openContactModal}
-      className="group fixed bottom-8 right-8 z-[65] bg-secondary text-primary flex items-center gap-3 px-6 py-4 cursor-pointer overflow-hidden"
+      className="group fixed bottom-20 right-8 z-[65] bg-secondary text-primary flex items-center gap-3 px-6 py-4 cursor-pointer overflow-hidden"
     >
       <span className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors duration-300" />
       <span
