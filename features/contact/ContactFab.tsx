@@ -14,7 +14,7 @@ export function ContactFab() {
     <button
       onClick={openContactModal}
       className={cn(
-        "group fixed bottom-8 right-8 z-[65] flex items-center gap-3 px-6 py-4 cursor-pointer overflow-hidden",
+        "group fixed bottom-[10px] right-6 md:bottom-8 md:right-8 z-[65] flex items-center gap-2 md:gap-3 px-4 py-3 md:px-6 md:py-4 cursor-pointer overflow-hidden",
         onGallery ? "bg-primary text-secondary" : "bg-secondary text-primary"
       )}
     >
@@ -24,7 +24,7 @@ export function ContactFab() {
       )} />
       <span
         className="relative font-sans font-medium uppercase"
-        style={{ letterSpacing: "0.2em", fontSize: "0.65rem" }}
+        style={{ letterSpacing: "0.2em", fontSize: "clamp(0.52rem, 1.5vw, 0.65rem)" }}
       >
         Contacto
       </span>

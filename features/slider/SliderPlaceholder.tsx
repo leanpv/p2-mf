@@ -84,25 +84,25 @@ export function SliderPlaceholder() {
           {/* Contenido */}
           <div className="relative z-10 text-center px-6">
             <p
-              className="font-sans font-medium text-accent uppercase mb-4"
-              style={{ letterSpacing: "0.3em", fontSize: "0.65rem" }}
+              className="font-sans font-medium text-accent uppercase mb-4 text-center"
+              style={{ letterSpacing: "0.3em", fontSize: "0.95rem" }}
             >
               {prop.name} · {prop.location}
             </p>
-            <h2
-              className="font-sans font-light text-secondary"
-              style={{ fontSize: "var(--text-display)", letterSpacing: "var(--tracking-display)", lineHeight: "var(--leading-display)" }}
+            <p
+              className="font-sans font-light text-secondary text-center"
+              style={{ fontSize: "2.1rem", letterSpacing: "0.18em" }}
             >
               {prop.sliderLabel}
-            </h2>
+            </p>
 
             <button
               onClick={(e) => { e.stopPropagation(); openGallery(i); }}
-              className="group relative mt-10 overflow-hidden border border-secondary/30 hover:border-secondary/60 px-8 py-3 cursor-pointer transition-colors duration-300"
+              className="group relative mt-10 overflow-hidden border border-secondary/95 hover:border-secondary px-8 py-3 cursor-pointer transition-colors duration-300"
             >
               <span className="absolute inset-0 bg-secondary/0 group-hover:bg-secondary/10 transition-colors duration-300" />
               <span
-                className="relative font-sans font-light text-secondary/60 group-hover:text-secondary uppercase transition-colors duration-300"
+                className="relative font-sans font-light text-secondary/95 group-hover:text-secondary uppercase transition-colors duration-300"
                 style={{ letterSpacing: "0.2em", fontSize: "0.65rem" }}
               >
                 Galería

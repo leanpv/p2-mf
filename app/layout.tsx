@@ -20,7 +20,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Propiedades CBA",
+  title: "Amatista",
   description: "Propiedades inmobiliarias de lujo",
   icons: {
     icon: "/faviconcba.png",

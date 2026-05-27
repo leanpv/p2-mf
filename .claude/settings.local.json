@@ -20,7 +20,35 @@
       "PowerShell(Get-Job)",
       "Bash(curl -s \"https://p2-bff.vercel.app/api/health\")",
       "Bash(timeout 2 curl -s \"http://localhost:3001/api/health\")",
-      "Bash(curl -s \"http://localhost:3001/api/health\")"
+      "Bash(curl -s \"http://localhost:3001/api/health\")",
+      "Bash(rm -rf dist)",
+      "Read(//c/c/Users/mario/CLAUDE/LAND2/backend/**)",
+      "Bash(curl -sv \"https://p2-bff.vercel.app/api/health\")",
+      "PowerShell(Stop-Process -Id 21284 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Start-Process powershell -ArgumentList \"-NoExit\", \"-Command\", \"cd 'C:\\\\Users\\\\mario\\\\CLAUDE\\\\LAND2\\\\backend'; Write-Host '=== BFF - NestJS \\(puerto 3001\\) ===' -ForegroundColor Cyan; npm run start:dev\")",
+      "PowerShell(Start-Process powershell -ArgumentList \"-NoExit\", \"-Command\", \"cd 'C:\\\\Users\\\\mario\\\\CLAUDE\\\\LAND2\\\\frontend'; Write-Host '=== MF - Next.js \\(puerto 3000\\) ===' -ForegroundColor Green; npm run dev\")",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":3000 :3001\")",
+      "Bash(findstr LISTENING)",
+      "Bash(copy public\\\\faviconcba.png app\\\\icon.png)",
+      "Bash(git rm *)",
+      "PowerShell(ffprobe -v quiet -print_format json -show_streams \"C:\\\\Users\\\\mario\\\\Downloads\\\\video1.mp4\" 2>&1)",
+      "PowerShell(python -c \"import json,sys; d=json.load\\(sys.stdin\\); s=d['streams'][0]; print\\('codec:', s.get\\('codec_name'\\)\\); print\\('fps:', s.get\\('r_frame_rate'\\)\\); print\\('nb_frames:', s.get\\('nb_frames'\\)\\); print\\('pix_fmt:', s.get\\('pix_fmt'\\)\\)\")",
+      "PowerShell(ffmpeg -y -i \"C:\\\\Users\\\\mario\\\\Downloads\\\\video1.mp4\" -frames:v 5 -q:v 85 \"C:\\\\Users\\\\mario\\\\CLAUDE\\\\frame-extractor\\\\video1\\\\test_%02d.webp\" 2>&1)",
+      "Bash(ls \"C:/Users/mario/Downloads/video1.mp4\" 2>/dev/null && echo \"existe\" || echo \"no encontrado\")",
+      "Read(//c/Users/mario/Downloads/**)",
+      "Bash(python extract.py \"C:/Users/mario/Downloads/video1.mp4\")",
+      "Bash(npx tsc *)",
+      "Bash(gh run *)",
+      "Bash(gh deployment *)",
+      "Bash(npx vercel *)",
+      "Bash(npx next *)",
+      "PowerShell(Get-Process | Where-Object { $_.Name -match \"node\" } | Select-Object Id, Name, @{N=\"RAM\\(MB\\)\";E={[math]::Round\\($_.WorkingSet/1MB,1\\)}}, @{N=\"CPU\";E={$_.CPU}} | Format-Table -AutoSize)",
+      "PowerShell(Stop-Process -Id 21008, 32872, 38588 -Force)",
+      "Bash(cp \"C:/Users/mario/Downloads/video1.mp4\" \"C:/Users/mario/CLAUDE/LAND2/frontend/public/video1.mp4\" && echo \"OK\")"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\mario\\Downloads"
     ]
   }
 }

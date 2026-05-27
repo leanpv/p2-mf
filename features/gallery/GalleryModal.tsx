@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { useUIStore } from "@/lib/zustand/ui.store";
 import { PROPERTIES, type Property } from "./gallery.data";
@@ -111,21 +112,29 @@ export function GalleryModal() {
         {/* Grid de fotos */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 md:px-12 pb-12 scrollbar-none">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {Array.from({ length: activeProp.photoCount }).map((_, photoIdx) => (
+            {Array.from({ length: activeProp.photos ? activeProp.photos.length : activeProp.photoCount }).map((_, photoIdx) => (
               <button
                 key={photoIdx}
                 onClick={() => setLightbox({ photoIdx })}
                 className="group relative aspect-[4/3] bg-muted-bg overflow-hidden cursor-pointer"
                 aria-label={`Foto ${photoIdx + 1} de ${activeProp.name}`}
               >
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span
-                    className="font-sans font-light text-muted/20 tabular-nums"
-                    style={{ fontSize: "2rem" }}
-                  >
-                    {String(photoIdx + 1).padStart(2, "0")}
-                  </span>
-                </div>
+                {activeProp.photos?.[photoIdx] ? (
+                  <Image
+                    src={activeProp.photos[photoIdx]}
+                    alt={`${activeProp.name} ${photoIdx + 1}`}
+                    fill
+                    unoptimized
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 768px) 50vw, 33vw"
+                  />
+                ) : !activeProp.photos ? (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="font-sans font-light text-muted/20 tabular-nums" style={{ fontSize: "2rem" }}>
+                      {String(photoIdx + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                ) : null}
                 <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/8 transition-colors duration-300 flex items-center justify-center">
                   <svg
                     className="text-primary opacity-0 group-hover:opacity-60 transition-opacity duration-300"
@@ -172,14 +181,25 @@ function Lightbox({
 
   return (
     <div className="fixed inset-0 z-[60] bg-primary flex items-center justify-center">
-      {/* Foto placeholder */}
-      <div className="relative w-full max-w-5xl aspect-[16/9] mx-6 md:mx-16 bg-white/5 flex items-center justify-center border border-secondary/10">
-        <span
-          className="font-sans font-light text-secondary/20 uppercase"
-          style={{ letterSpacing: "0.25em", fontSize: "0.65rem" }}
-        >
-          {property.name} · {property.location} · {String(photoIdx + 1).padStart(2, "0")}
-        </span>
+      {/* Foto */}
+      <div className="relative w-full max-w-5xl aspect-[16/9] mx-6 md:mx-16">
+        {property.photos?.[photoIdx] ? (
+          <Image
+            src={property.photos[photoIdx]}
+            alt={`${property.name} ${photoIdx + 1}`}
+            fill
+            unoptimized
+            className="object-contain"
+            sizes="100vw"
+            priority
+          />
+        ) : (
+          <div className="absolute inset-0 bg-white/5 flex items-center justify-center border border-secondary/10">
+            <span className="font-sans font-light text-secondary/20 uppercase" style={{ letterSpacing: "0.25em", fontSize: "0.65rem" }}>
+              {property.name} · {property.location} · {String(photoIdx + 1).padStart(2, "0")}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Cerrar */}
