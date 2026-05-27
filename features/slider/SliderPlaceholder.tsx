@@ -1,13 +1,30 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useUIStore } from "@/lib/zustand/ui.store";
 import { PROPERTIES } from "@/features/gallery/gallery.data";
 import { cn } from "@/lib/utils";
 
+const SLIDE_VIDEOS: Record<number, string> = {
+  0: "/video1.mp4",
+  1: "/video2.mp4",
+};
+
 export function SliderPlaceholder() {
   const { currentSlide, nextSlide, prevSlide, openGallery } = useUIStore();
   const touchStartX = useRef<number | null>(null);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  useEffect(() => {
+    videoRefs.current.forEach((video, i) => {
+      if (!video) return;
+      if (i === currentSlide) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+  }, [currentSlide]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -41,16 +58,28 @@ export function SliderPlaceholder() {
           )}
           aria-hidden={i !== currentSlide}
         >
-          {/* Placeholder visual */}
+          {/* Fondo: video si existe, placeholder numérico si no */}
+          {SLIDE_VIDEOS[i] ? (
+            <video
+              ref={(el) => { videoRefs.current[i] = el; }}
+              src={SLIDE_VIDEOS[i]}
+              muted
+              loop
+              playsInline
+              preload="auto"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center opacity-5">
+              <span
+                className="font-sans font-light text-secondary select-none"
+                style={{ fontSize: "clamp(8rem, 25vw, 22rem)", lineHeight: 1, letterSpacing: "0.1em" }}
+              >
+                {String(i + 1).padStart(2, "0")}
+              </span>
+            </div>
+          )}
           <div className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/40 to-primary/90" />
-          <div className="absolute inset-0 flex items-center justify-center opacity-5">
-            <span
-              className="font-sans font-light text-secondary select-none"
-              style={{ fontSize: "clamp(8rem, 25vw, 22rem)", lineHeight: 1, letterSpacing: "0.1em" }}
-            >
-              {String(i + 1).padStart(2, "0")}
-            </span>
-          </div>
 
           {/* Contenido */}
           <div className="relative z-10 text-center px-6">
