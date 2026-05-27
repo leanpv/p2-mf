@@ -26,6 +26,7 @@ export const metadata: Metadata = {
     icon: "/faviconcba.png",
   },
   themeColor: "#0a0a0a",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({

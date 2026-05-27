@@ -47,7 +47,7 @@
 }
 
 body {
-  background-color: var(--color-background);
+  background-color: var(--color-primary);
   color: var(--color-foreground);
   font-family: var(--font-sans);
   line-height: var(--leading-body);
