@@ -1,9 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { contactSchema } from "@/features/contact/contact.schema";
+import { rateLimit } from "@/lib/rate-limit";
 
 const TELEGRAM_API = "https://api.telegram.org";
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const rl = rateLimit(`contact:${ip}`, 5, 10 * 60 * 1000);
+
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { message: "Demasiados intentos. Esperá unos minutos." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)),
+          "X-RateLimit-Limit": "5",
+          "X-RateLimit-Remaining": "0",
+        },
+      }
+    );
+  }
+
   let body: unknown;
 
   try {
