@@ -43,6 +43,7 @@
 /* CSS custom properties para JavaScript (GSAP, etc.) */
 :root {
   --slide-count: 5;
+  color-scheme: dark;
 }
 
 body {
