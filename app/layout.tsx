@@ -25,6 +25,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/faviconcba.png",
   },
+  themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({
@@ -37,7 +38,7 @@ export default function RootLayout({
       lang="es"
       className={`${exo2.variable} ${dmSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col bg-primary">
         <ReactQueryProvider>
           {children}
           <ContactModal />
