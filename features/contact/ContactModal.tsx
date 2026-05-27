@@ -50,10 +50,12 @@ export function ContactModal() {
     if (!panel || !overlay) return;
 
     if (isContactModalOpen) {
-      gsap.set(panel, { x: "100%" });
+      gsap.set(panel, { x: "100%", willChange: "transform" });
       gsap.set(overlay, { autoAlpha: 0 });
 
-      const tl = gsap.timeline();
+      const tl = gsap.timeline({
+        onComplete: () => gsap.set(panel, { clearProps: "willChange" }),
+      });
       tl.to(overlay, {
         autoAlpha: 1,
         duration: 0.4,
@@ -62,13 +64,21 @@ export function ContactModal() {
         x: "0%",
         duration: 0.9,
         ease: "power4.out",
+        force3D: true,
       }, "-=0.25");
     } else {
-      const tl = gsap.timeline({ onComplete: () => mutation.reset() });
+      gsap.set(panel, { willChange: "transform" });
+      const tl = gsap.timeline({
+        onComplete: () => {
+          gsap.set(panel, { clearProps: "willChange" });
+          mutation.reset();
+        },
+      });
       tl.to(panel, {
         x: "100%",
         duration: 0.55,
         ease: "power3.inOut",
+        force3D: true,
       }).to(overlay, {
         autoAlpha: 0,
         duration: 0.35,
@@ -92,7 +102,7 @@ export function ContactModal() {
       <div
         ref={overlayRef}
         onClick={closeContactModal}
-        className="fixed inset-0 z-[70] bg-primary/60 hover:bg-primary/70 backdrop-blur-sm invisible opacity-0 cursor-pointer transition-colors duration-300"
+        className="fixed inset-0 z-[70] bg-primary/70 invisible opacity-0 cursor-pointer"
         aria-hidden="true"
       />
 
