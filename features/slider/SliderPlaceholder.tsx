@@ -140,7 +140,7 @@ export function SliderPlaceholder() {
       </button>
 
       {/* Indicadores mobile: nombre a la izquierda, FAB contacto a la derecha */}
-      <div className="md:hidden absolute bottom-8 left-8 z-20 flex flex-col items-start gap-2">
+      <div className="md:hidden absolute bottom-[10px] left-6 z-20 flex flex-col justify-center items-start gap-2 h-[44px]">
         <span
           className="font-sans font-medium text-accent uppercase whitespace-nowrap"
           style={{ letterSpacing: "0.18em", fontSize: "0.8rem" }}
