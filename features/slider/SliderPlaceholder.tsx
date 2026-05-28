@@ -8,6 +8,9 @@ import { cn } from "@/lib/utils";
 const SLIDE_VIDEOS: Record<number, string> = {
   0: "/video1.mp4",
   1: "/video2.mp4",
+  2: "/video3.mp4",
+  3: "/video4.mp4",
+  4: "/video5.mp4",
 };
 
 export function SliderPlaceholder() {

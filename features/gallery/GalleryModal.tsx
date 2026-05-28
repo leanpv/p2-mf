@@ -219,7 +219,7 @@ function Lightbox({
       onTouchEnd={handleTouchEnd}
     >
       {/* Foto */}
-      <div className="relative w-full max-w-5xl aspect-[16/9] mx-6 md:mx-16">
+      <div className="relative w-full max-w-7xl aspect-[16/9] mx-4 md:mx-10">
         {property.photos?.[photoIdx] ? (
           <Image
             src={property.photos[photoIdx]}

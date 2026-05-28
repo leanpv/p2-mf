@@ -43,15 +43,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Error de configuración" }, { status: 500 });
   }
 
-  const backendRes = await fetch(`${backendUrl}/api/contact`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-bff-secret": secret,
-      "x-forwarded-for": ip,
-    },
-    body: JSON.stringify(parsed.data),
-  });
+  let backendRes: Response;
+  try {
+    backendRes = await fetch(`${backendUrl}/api/contact`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-bff-secret": secret,
+        "x-forwarded-for": ip,
+      },
+      body: JSON.stringify(parsed.data),
+    });
+  } catch (err) {
+    console.error("Error conectando al backend:", err);
+    return NextResponse.json({ message: "Error al enviar el mensaje" }, { status: 502 });
+  }
 
   if (!backendRes.ok) {
     console.error("Error backend contact:", await backendRes.text());
