@@ -82,10 +82,10 @@ export function SliderPlaceholder() {
               </span>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/40 to-primary/90" />
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/80 via-primary/50 to-primary/90" />
 
           {/* Contenido */}
-          <div className="relative z-10 text-center px-6 translate-y-2 md:translate-y-0">
+          <div className="relative z-10 text-center px-6 translate-y-2 md:translate-y-0 [filter:drop-shadow(0_2px_8px_rgba(0,0,0,0.45))]">
             <p
               className="font-sans font-medium text-accent uppercase mb-[60px] md:mb-4 text-center"
               style={{ letterSpacing: "0.3em", fontSize: "0.95rem" }}
