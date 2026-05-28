@@ -106,11 +106,11 @@ export function SliderPlaceholder() {
 
             <button
               onClick={(e) => { e.stopPropagation(); openGallery(i); }}
-              className="group relative mt-[60px] md:mt-10 overflow-hidden border border-secondary/95 hover:border-secondary px-8 py-3 cursor-pointer transition-colors duration-300"
+              className="group relative mt-[60px] md:mt-10 overflow-hidden border-2 border-secondary/95 hover:border-secondary px-8 py-3 cursor-pointer transition-colors duration-300"
             >
-              <span className="absolute inset-0 bg-secondary/0 group-hover:bg-secondary/10 transition-colors duration-300" />
+              <span className="absolute inset-0 bg-secondary/10 group-hover:bg-secondary/20 transition-colors duration-300" />
               <span
-                className="relative font-sans font-light text-secondary/95 group-hover:text-secondary uppercase transition-colors duration-300"
+                className="relative font-sans font-medium text-secondary/95 group-hover:text-secondary uppercase transition-colors duration-300"
                 style={{ letterSpacing: "0.2em", fontSize: "0.65rem" }}
               >
                 Ver más
