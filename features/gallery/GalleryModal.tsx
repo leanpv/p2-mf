@@ -11,11 +11,27 @@ export function GalleryModal() {
   const { isGalleryOpen, closeGallery, galleryActiveTab, setGalleryTab, setLightbox: setLightboxStore } = useUIStore();
   const panelRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const [lightbox, setLightboxLocal] = useState<{ photoIdx: number } | null>(null);
+  const touchStartX = useRef<number | null>(null);
 
   const setLightbox = (val: { photoIdx: number } | null) => {
     setLightboxLocal(val);
     setLightboxStore(val !== null);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || lightbox) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(delta) > 50) {
+      if (delta < 0) setGalleryTab((galleryActiveTab + 1) % PROPERTIES.length);
+      else setGalleryTab((galleryActiveTab - 1 + PROPERTIES.length) % PROPERTIES.length);
+    }
+    touchStartX.current = null;
   };
 
   useEffect(() => {
@@ -43,6 +59,7 @@ export function GalleryModal() {
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
+    tabsRef.current[galleryActiveTab]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
   }, [galleryActiveTab, isGalleryOpen]);
 
   const activeProp = PROPERTIES[galleryActiveTab];
@@ -55,6 +72,8 @@ export function GalleryModal() {
         aria-modal="true"
         aria-label="Galería de propiedades"
         className="fixed inset-0 z-50 bg-secondary flex flex-col translate-y-full"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 md:px-12 py-6 border-b border-border shrink-0">
@@ -84,6 +103,7 @@ export function GalleryModal() {
           {PROPERTIES.map((prop, i) => (
             <button
               key={prop.id}
+              ref={(el) => { tabsRef.current[i] = el; }}
               onClick={() => setGalleryTab(i)}
               className={cn(
                 "font-sans font-medium uppercase py-4 whitespace-nowrap cursor-pointer transition-colors duration-200 border-b-2 -mb-px shrink-0",
@@ -155,8 +175,8 @@ export function GalleryModal() {
           property={activeProp}
           photoIdx={lightbox.photoIdx}
           onClose={() => setLightbox(null)}
-          onPrev={() => lightbox && lightbox.photoIdx > 0 && setLightbox({ photoIdx: lightbox.photoIdx - 1 })}
-          onNext={() => lightbox && lightbox.photoIdx < activeProp.photoCount - 1 && setLightbox({ photoIdx: lightbox.photoIdx + 1 })}
+          onPrev={() => lightbox && setLightbox({ photoIdx: (lightbox.photoIdx - 1 + activeProp.photoCount) % activeProp.photoCount })}
+          onNext={() => lightbox && setLightbox({ photoIdx: (lightbox.photoIdx + 1) % activeProp.photoCount })}
         />
       )}
     </>
@@ -176,11 +196,28 @@ function Lightbox({
   onPrev: () => void;
   onNext: () => void;
 }) {
-  const hasPrev = photoIdx > 0;
-  const hasNext = photoIdx < property.photoCount - 1;
+  const touchStartX = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(delta) > 50) {
+      if (delta < 0) onNext();
+      else onPrev();
+    }
+    touchStartX.current = null;
+  };
 
   return (
-    <div className="fixed inset-0 z-[60] bg-primary flex items-center justify-center">
+    <div
+      className="fixed inset-0 z-[60] bg-primary flex items-center justify-center"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Foto */}
       <div className="relative w-full max-w-5xl aspect-[16/9] mx-6 md:mx-16">
         {property.photos?.[photoIdx] ? (
@@ -218,34 +255,32 @@ function Lightbox({
       </button>
 
       {/* Anterior */}
-      {hasPrev && (
-        <button
-          onClick={onPrev}
-          className="absolute left-6 md:left-12 top-1/2 -translate-y-1/2 text-secondary/40 hover:text-accent hover:scale-110 transition-all duration-300 p-2 cursor-pointer"
-          aria-label="Foto anterior"
-        >
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1">
-            <path d="M20 8L12 16L20 24" />
-          </svg>
-        </button>
-      )}
+      <button
+        onClick={onPrev}
+        className="group absolute left-6 md:left-12 top-1/2 -translate-y-1/2 text-secondary hover:text-accent hover:-translate-x-2 transition-all duration-300 p-2 cursor-pointer"
+        aria-label="Foto anterior"
+      >
+        <svg width="56" height="56" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5"
+          className="transition-all duration-300 group-hover:[stroke-width:2]">
+          <path d="M20 8L12 16L20 24" />
+        </svg>
+      </button>
 
       {/* Siguiente */}
-      {hasNext && (
-        <button
-          onClick={onNext}
-          className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2 text-secondary/40 hover:text-accent hover:scale-110 transition-all duration-300 p-2 cursor-pointer"
-          aria-label="Foto siguiente"
-        >
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1">
-            <path d="M12 8L20 16L12 24" />
-          </svg>
-        </button>
-      )}
+      <button
+        onClick={onNext}
+        className="group absolute right-6 md:right-12 top-1/2 -translate-y-1/2 text-secondary hover:text-accent hover:translate-x-2 transition-all duration-300 p-2 cursor-pointer"
+        aria-label="Foto siguiente"
+      >
+        <svg width="56" height="56" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5"
+          className="transition-all duration-300 group-hover:[stroke-width:2]">
+          <path d="M12 8L20 16L12 24" />
+        </svg>
+      </button>
 
       {/* Contador */}
       <div
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 font-sans font-light text-secondary/30 tabular-nums"
+        className="absolute bottom-6 left-6 md:left-12 font-sans font-light text-secondary/30 tabular-nums"
         style={{ letterSpacing: "0.15em", fontSize: "0.7rem" }}
       >
         {String(photoIdx + 1).padStart(2, "0")} / {String(property.photoCount).padStart(2, "0")}
