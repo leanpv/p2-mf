@@ -42,7 +42,7 @@ export function SliderPlaceholder() {
 
   return (
     <section
-      className="relative w-full h-screen bg-primary overflow-hidden"
+      className="relative w-full h-dvh bg-primary overflow-hidden"
       aria-label="Slider de propiedades"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
