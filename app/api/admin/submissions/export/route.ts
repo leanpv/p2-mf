@@ -8,35 +8,46 @@ export async function GET() {
   const backendUrl = process.env.NESTJS_API_URL;
   const secret = process.env.BFF_TO_BACKEND_SECRET;
 
-  // Traer todos los submissions (sin paginación, para el export)
-  let res: Response;
-  try {
-    res = await fetch(`${backendUrl}/api/contact/submissions?limit=10000`, {
-      headers: { "x-bff-secret": secret! },
-    });
-  } catch {
-    return NextResponse.json({ message: "Error conectando al backend" }, { status: 502 });
-  }
-
-  if (!res.ok) return NextResponse.json({ message: "Error del backend" }, { status: 502 });
-
-  const { data } = await res.json();
-
-  const header = ["Nombre", "Teléfono", "Mensaje", "Estado", "IP", "Fecha"].join(",");
-  const rows = data.map((s: {
+  // Paginar para traer todos los submissions respetando el @Max(100) del backend
+  const allData: {
     name: string;
     phone: string;
     message?: string;
     status: string;
-    ip: string;
+    ip?: string;
     createdAt: string;
-  }) =>
+  }[] = [];
+
+  let page = 1;
+  const limit = 100;
+
+  while (true) {
+    let res: Response;
+    try {
+      res = await fetch(`${backendUrl}/api/contact/submissions?page=${page}&limit=${limit}`, {
+        headers: { "x-bff-secret": secret! },
+      });
+    } catch {
+      return NextResponse.json({ message: "Error conectando al backend" }, { status: 502 });
+    }
+
+    if (!res.ok) return NextResponse.json({ message: "Error del backend" }, { status: 502 });
+
+    const { data, total } = await res.json();
+    allData.push(...data);
+
+    if (allData.length >= total) break;
+    page++;
+  }
+
+  const header = ["Nombre", "Teléfono", "Mensaje", "Estado", "IP", "Fecha"].join(",");
+  const rows = allData.map((s) =>
     [
       `"${s.name.replace(/"/g, '""')}"`,
       `"${s.phone}"`,
       `"${(s.message ?? "").replace(/"/g, '""')}"`,
       s.status,
-      s.ip,
+      s.ip ?? "",
       new Date(s.createdAt).toLocaleString("es-AR"),
     ].join(",")
   );

@@ -60,44 +60,41 @@ export function SubmissionsPanel() {
   return (
     <div className="flex flex-col gap-6">
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <h2 className="font-serif text-primary" style={{ fontSize: "clamp(1.2rem, 3vw, 1.6rem)" }}>
-            Consultas recibidas
-          </h2>
+      <div className="flex flex-col gap-3">
+        <h2 className="font-serif text-primary" style={{ fontSize: "clamp(1.2rem, 3vw, 1.6rem)" }}>
+          Consultas recibidas
+        </h2>
+        <div className="flex items-center justify-between gap-4">
           {data && (
             <p className="font-sans text-muted" style={{ fontSize: "0.75rem" }}>
               {data.total} {data.total === 1 ? "consulta" : "consultas"} en total
             </p>
           )}
-        </div>
-        <div className="flex items-center gap-3">
-          <StatusFilter value={statusFilter} onChange={setStatusFilter} />
           <ExportButton />
         </div>
+        <StatusFilter value={statusFilter} onChange={setStatusFilter} />
       </div>
 
-      {/* Tabla */}
-      <div className="bg-secondary border border-border overflow-hidden">
-        {isLoading && (
-          <div className="flex items-center justify-center py-16">
-            <p className="font-sans text-muted" style={{ fontSize: "0.8rem" }}>Cargando…</p>
-          </div>
-        )}
+      {/* Estados compartidos */}
+      {isLoading && (
+        <div className="flex items-center justify-center py-16 bg-secondary border border-border">
+          <p className="font-sans text-muted" style={{ fontSize: "0.8rem" }}>Cargando…</p>
+        </div>
+      )}
+      {isError && (
+        <div className="flex items-center justify-center py-16 bg-secondary border border-border">
+          <p className="font-sans text-red-600" style={{ fontSize: "0.8rem" }}>Error al cargar las consultas.</p>
+        </div>
+      )}
+      {data && data.data.length === 0 && (
+        <div className="flex items-center justify-center py-16 bg-secondary border border-border">
+          <p className="font-sans text-muted" style={{ fontSize: "0.8rem" }}>No hay consultas.</p>
+        </div>
+      )}
 
-        {isError && (
-          <div className="flex items-center justify-center py-16">
-            <p className="font-sans text-red-600" style={{ fontSize: "0.8rem" }}>Error al cargar las consultas.</p>
-          </div>
-        )}
-
-        {data && data.data.length === 0 && (
-          <div className="flex items-center justify-center py-16">
-            <p className="font-sans text-muted" style={{ fontSize: "0.8rem" }}>No hay consultas.</p>
-          </div>
-        )}
-
-        {data && data.data.length > 0 && (
+      {/* Tabla — solo desktop */}
+      {data && data.data.length > 0 && (
+        <div className="hidden md:block bg-secondary border border-border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -131,8 +128,28 @@ export function SubmissionsPanel() {
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* Cards — solo mobile */}
+      {data && data.data.length > 0 && (
+        <div className="flex flex-col gap-3 md:hidden">
+          {data.data.map((s) => (
+            <SubmissionCard
+              key={s._id}
+              submission={s}
+              onToggleStatus={() =>
+                statusMutation.mutate({
+                  id: s._id,
+                  status: s.status === "pending" ? "contacted" : "pending",
+                })
+              }
+              onDelete={() => openDeleteModal(s._id)}
+              isPending={statusMutation.isPending || deleteMutation.isPending}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Paginación */}
       {totalPages > 1 && (
@@ -244,13 +261,13 @@ function StatusFilter({
   onChange: (v: "all" | "pending" | "contacted") => void;
 }) {
   return (
-    <div className="flex border border-border overflow-hidden">
+    <div className="flex w-full border border-border overflow-hidden">
       {(["all", "pending", "contacted"] as const).map((opt) => (
         <button
           key={opt}
           onClick={() => onChange(opt)}
           className={cn(
-            "font-sans uppercase px-3 py-2 transition-colors duration-200 cursor-pointer",
+            "flex-1 font-sans uppercase px-3 py-2 transition-colors duration-200 cursor-pointer text-center",
             value === opt
               ? "bg-primary text-secondary hover:opacity-80"
               : "text-muted bg-secondary hover:bg-border"
@@ -322,6 +339,82 @@ function DeleteModal({
             {isPending ? "Eliminando…" : "Eliminar"}
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function SubmissionCard({
+  submission: s,
+  onToggleStatus,
+  onDelete,
+  isPending,
+}: {
+  submission: Submission;
+  onToggleStatus: () => void;
+  onDelete: () => void;
+  isPending: boolean;
+}) {
+  const [expanded, setExpanded] = React.useState(false);
+  const hasLongMessage = s.message && s.message.length > 60;
+
+  return (
+    <div className="bg-secondary border border-border p-4 flex flex-col gap-3">
+      <div className="flex items-start justify-between gap-2">
+        <p className="font-sans font-medium text-primary" style={{ fontSize: "0.9rem" }}>
+          {s.name}
+        </p>
+        <p className="font-sans text-muted whitespace-nowrap" style={{ fontSize: "0.7rem" }}>
+          {new Date(s.createdAt).toLocaleDateString("es-AR", {
+            day: "2-digit", month: "2-digit", year: "2-digit",
+          })}
+        </p>
+      </div>
+
+      <p className="font-sans text-muted" style={{ fontSize: "0.8rem" }}>
+        {s.phone}
+      </p>
+
+      {s.message && (
+        <div className="flex flex-col gap-1">
+          <p className={cn("font-sans text-muted", !expanded && "line-clamp-2")} style={{ fontSize: "0.8rem" }}>
+            {s.message}
+          </p>
+          {hasLongMessage && (
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="text-left text-muted/60 hover:text-primary transition-colors duration-150 cursor-pointer underline underline-offset-2"
+              style={{ fontSize: "0.7rem" }}
+            >
+              {expanded ? "Ver menos" : "Ver más"}
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className="flex items-center justify-between gap-2 pt-2 border-t border-border">
+        <button
+          onClick={onToggleStatus}
+          disabled={isPending}
+          className={cn(
+            "font-sans uppercase px-3 py-2 border transition-colors duration-150 disabled:opacity-50 cursor-pointer leading-none",
+            s.status === "contacted"
+              ? "border-accent text-accent"
+              : "border-border text-muted hover:border-primary hover:text-primary"
+          )}
+          style={{ fontSize: "0.6rem", letterSpacing: "0.1em" }}
+        >
+          {s.status === "contacted" ? "Contactado" : "Pendiente"}
+        </button>
+        <button
+          onClick={onDelete}
+          disabled={isPending}
+          className="font-sans text-red-500 hover:text-red-700 transition-colors duration-150 disabled:opacity-50 cursor-pointer w-8 h-8 flex items-center justify-center"
+          style={{ fontSize: "0.85rem" }}
+          aria-label="Eliminar"
+        >
+          ✕
+        </button>
       </div>
     </div>
   );

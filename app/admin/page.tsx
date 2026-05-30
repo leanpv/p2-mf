@@ -10,7 +10,7 @@ export default async function AdminPage() {
   return (
     <div className="min-h-dvh bg-muted-bg">
       <AdminHeader email={session.email} />
-      <main className="max-w-6xl mx-auto px-4 md:px-8 py-8">
+      <main className="max-w-6xl mx-auto px-4 md:px-8 pt-4 pb-8">
         <SubmissionsPanel />
       </main>
     </div>
