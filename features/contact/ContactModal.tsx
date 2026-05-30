@@ -247,7 +247,7 @@ function SuccessState({ onClose }: { onClose: () => void }) {
       </p>
       <button
         onClick={onClose}
-        className="font-sans font-medium text-primary uppercase underline underline-offset-4 hover:text-accent transition-colors duration-200"
+        className="font-sans font-medium text-primary uppercase underline underline-offset-4 hover:text-accent transition-colors duration-200 cursor-pointer"
         style={{ letterSpacing: "0.15em", fontSize: "0.7rem" }}
       >
         Cerrar

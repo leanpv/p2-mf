@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Exo_2, DM_Sans } from "next/font/google";
 import { ReactQueryProvider } from "@/lib/react-query";
 import { ContactModal } from "@/features/contact/ContactModal";
-import { ContactFab } from "@/features/contact/ContactFab";
+import { ConditionalFab } from "@/features/contact/ConditionalFab";
 import { GalleryModal } from "@/features/gallery/GalleryModal";
 import "./globals.css";
 
@@ -44,7 +44,7 @@ export default function RootLayout({
           {children}
           <ContactModal />
           <GalleryModal />
-          <ContactFab />
+          <ConditionalFab />
         </ReactQueryProvider>
       </body>
     </html>
