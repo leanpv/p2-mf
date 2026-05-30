@@ -5,9 +5,9 @@ import { cookies } from "next/headers";
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get("code");
   const stateParam = req.nextUrl.searchParams.get("state");
-  const appUrl = process.env.APP_URL;
-  const clientId = process.env.AUTH_GOOGLE_ID;
-  const clientSecret = process.env.AUTH_GOOGLE_SECRET;
+  const appUrl = process.env.APP_URL?.trim();
+  const clientId = process.env.AUTH_GOOGLE_ID?.trim();
+  const clientSecret = process.env.AUTH_GOOGLE_SECRET?.trim();
   const allowedEmails = process.env.ADMIN_EMAILS?.split(",").map((e) => e.trim()) ?? [];
 
   if (!code || !appUrl || !clientId || !clientSecret) {

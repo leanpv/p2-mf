@@ -8,8 +8,8 @@ function generatePKCE() {
 }
 
 export function GET() {
-  const clientId = process.env.AUTH_GOOGLE_ID;
-  const appUrl = process.env.APP_URL;
+  const clientId = process.env.AUTH_GOOGLE_ID?.trim();
+  const appUrl = process.env.APP_URL?.trim();
 
   if (!clientId || !appUrl) {
     return NextResponse.json({ message: "Error de configuración" }, { status: 500 });
