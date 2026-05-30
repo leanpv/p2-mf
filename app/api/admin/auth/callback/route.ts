@@ -14,14 +14,16 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(`${appUrl}/admin/login?error=config`);
   }
 
-  // Verificar state para prevenir CSRF
+  // Verificar state (CSRF)
   const cookieStore = await cookies();
   const savedState = cookieStore.get("oauth_state")?.value;
-  if (!stateParam || !savedState || stateParam !== savedState) {
+  const verifier = cookieStore.get("oauth_verifier")?.value;
+
+  if (!stateParam || !savedState || stateParam !== savedState || !verifier) {
     return NextResponse.redirect(`${appUrl}/admin/login?error=state`);
   }
 
-  // Intercambiar code por token
+  // Intercambiar code por token (con PKCE verifier)
   const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -31,6 +33,7 @@ export async function GET(req: NextRequest) {
       client_secret: clientSecret,
       redirect_uri: `${appUrl}/api/admin/auth/callback`,
       grant_type: "authorization_code",
+      code_verifier: verifier,
     }),
   });
 
@@ -61,7 +64,7 @@ export async function GET(req: NextRequest) {
 
   const response = NextResponse.redirect(`${appUrl}/admin`);
   response.cookies.set(cookie);
-  // Limpiar la cookie de state
   response.cookies.set("oauth_state", "", { maxAge: 0, path: "/" });
+  response.cookies.set("oauth_verifier", "", { maxAge: 0, path: "/" });
   return response;
 }
