@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSession, setSessionCookie } from "@/lib/admin/session";
+import { cookies } from "next/headers";
 
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get("code");
+  const stateParam = req.nextUrl.searchParams.get("state");
   const appUrl = process.env.APP_URL;
   const clientId = process.env.AUTH_GOOGLE_ID;
   const clientSecret = process.env.AUTH_GOOGLE_SECRET;
@@ -10,6 +12,13 @@ export async function GET(req: NextRequest) {
 
   if (!code || !appUrl || !clientId || !clientSecret) {
     return NextResponse.redirect(`${appUrl}/admin/login?error=config`);
+  }
+
+  // Verificar state para prevenir CSRF
+  const cookieStore = await cookies();
+  const savedState = cookieStore.get("oauth_state")?.value;
+  if (!stateParam || !savedState || stateParam !== savedState) {
+    return NextResponse.redirect(`${appUrl}/admin/login?error=state`);
   }
 
   // Intercambiar code por token
@@ -52,5 +61,7 @@ export async function GET(req: NextRequest) {
 
   const response = NextResponse.redirect(`${appUrl}/admin`);
   response.cookies.set(cookie);
+  // Limpiar la cookie de state
+  response.cookies.set("oauth_state", "", { maxAge: 0, path: "/" });
   return response;
 }
