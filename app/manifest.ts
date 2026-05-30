@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "Amatista",
     description: "Propiedades inmobiliarias de lujo",
     start_url: "/",
-    display: "standalone",
+    display: "browser",
     background_color: "#0a0a0a",
     theme_color: "#0a0a0a",
     icons: [
