@@ -8,6 +8,11 @@ const serverEnvSchema = z.object({
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
+  AUTH_GOOGLE_ID: z.string().min(1),
+  AUTH_GOOGLE_SECRET: z.string().min(1),
+  AUTH_JWT_SECRET: z.string().min(32),
+  ADMIN_EMAILS: z.string().min(1),
+  APP_URL: z.string().url(),
 });
 
 const parsed = serverEnvSchema.safeParse(process.env);
