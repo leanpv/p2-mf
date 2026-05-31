@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (!res.ok) {
-    return NextResponse.json({ message: "Credenciales inválidas" }, { status: 401 });
+    return NextResponse.json({ message: "Credenciales inválidas", backendStatus: res.status }, { status: 401 });
   }
 
   const token = await createSession(parsed.data.email);
