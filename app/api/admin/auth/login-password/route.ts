@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createSession, setSessionCookie } from "@/lib/admin/session";
-import { rateLimit } from "@/lib/rate-limit";
 
 const schema = z.object({
   email: z.string().email(),
@@ -9,12 +8,6 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  const rl = rateLimit(`admin-login:${ip}`, 5, 15 * 60 * 1000);
-  if (!rl.allowed) {
-    return NextResponse.json({ message: "Demasiados intentos. Esperá 15 minutos." }, { status: 429 });
-  }
-
   let body: unknown;
   try { body = await req.json(); } catch {
     return NextResponse.json({ message: "Request inválido" }, { status: 400 });
