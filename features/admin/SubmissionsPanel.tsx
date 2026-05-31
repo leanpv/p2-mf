@@ -65,11 +65,13 @@ export function SubmissionsPanel() {
           Consultas recibidas
         </h2>
         <div className="flex items-center justify-between gap-4">
-          {data && (
-            <p className="font-sans text-muted" style={{ fontSize: "0.75rem" }}>
-              {data.total} {data.total === 1 ? "consulta" : "consultas"} en total
-            </p>
-          )}
+          <p className="font-sans text-muted" style={{ fontSize: "0.75rem" }}>
+            {data
+              ? `${data.total} ${data.total === 1 ? "consulta" : "consultas"} en total`
+              : isLoading
+              ? "Cargando…"
+              : ""}
+          </p>
           <ExportButton />
         </div>
         <StatusFilter value={statusFilter} onChange={setStatusFilter} />
