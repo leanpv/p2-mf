@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
   // Verificar allowlist antes de llamar al backend
   if (!allowedEmails.includes(parsed.data.email.toLowerCase())) {
-    return NextResponse.json({ message: "Credenciales inválidas" }, { status: 401 });
+    return NextResponse.json({ message: "Email no autorizado" }, { status: 401 });
   }
 
   let res: Response;
